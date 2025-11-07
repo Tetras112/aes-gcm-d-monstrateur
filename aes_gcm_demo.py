@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
 """
-aes_gcm_demo.py
+
+Alexandre Marconnot
 
 Démonstrateur pédagogique AES-GCM
 - Montre pas à pas le chiffrement et le déchiffrement en mode Galois/Counter (GCM)
@@ -12,8 +12,8 @@ Dépendances :
 """
 
 import time
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
+from Cryptodome.Cipher import AES
+from Cryptodome.Random import get_random_bytes
 import struct
 import binascii
 
@@ -30,7 +30,7 @@ MANUAL_STEP = True  # Si True, appuyer sur Entrée entre chaque étape
 def wait(t=DELAY):
     """Pause combinant délai automatique et attente manuelle."""
     if MANUAL_STEP:
-        input("\n(↩️  Appuyez sur Entrée pour continuer...)")
+        input("\n(Appuyez sur Entrée pour continuer...)")
     else:
         time.sleep(t)
 
@@ -117,7 +117,7 @@ def aes_encrypt_block(key: bytes, input_block: bytes) -> bytes:
 # Démonstration du chiffrement AES-GCM
 # --------------------------
 def aes_gcm_encrypt_demo(key: bytes, iv: bytes, plaintext: bytes, aad: bytes):
-    print("\n========== 🔒 CHIFFREMENT AES-GCM ==========")
+    print("\n========== CHIFFREMENT AES-GCM ==========")
     print("Clé (Key) :", format_hex(key))
     print("IV :", format_hex(iv))
     print("AAD (Additional Authenticated Data) :", format_hex(aad))
@@ -147,8 +147,8 @@ def aes_gcm_encrypt_demo(key: bytes, iv: bytes, plaintext: bytes, aad: bytes):
         print(f" Bloc {i//16}:")
         print(f"   CTR       = {format_hex(counter_block)}")
         print(f"   Keystream = {format_hex(keystream_block)}")
-        print(f"   P         = {format_hex(plaintext_block)}")
-        print(f"   C         = {format_hex(ciphertext_block)}")
+        print(f"   Plaintext Block         = {format_hex(plaintext_block)}")
+        print(f"   Ciphertext Block         = {format_hex(ciphertext_block)}")
         counter_block = increment_counter(counter_block)
         wait(BLOCK_DELAY)
 
@@ -168,11 +168,11 @@ def aes_gcm_encrypt_demo(key: bytes, iv: bytes, plaintext: bytes, aad: bytes):
 # Démonstration du déchiffrement AES-GCM
 # --------------------------
 def aes_gcm_decrypt_demo(key: bytes, iv: bytes, aad: bytes, ciphertext: bytes, tag: bytes, subkey_H: bytes, initial_counter_J0: bytes):
-    print("\n========== 🔓 DÉCHIFFREMENT AES-GCM ==========")
+    print("\n========== DÉCHIFFREMENT AES-GCM ==========")
     print("Clé :", format_hex(key))
     print("IV  :", format_hex(iv))
     print("AAD :", format_hex(aad))
-    print("Texte chiffré (Ciphertext) :", format_hex(ciphertext))
+    print("Ciphertext :", format_hex(ciphertext))
     print("Tag attendu :", format_hex(tag))
     wait()
 
@@ -185,9 +185,9 @@ def aes_gcm_decrypt_demo(key: bytes, iv: bytes, aad: bytes, ciphertext: bytes, t
     recalculated_tag = xor_blocks(aes_encrypt_block(key, initial_counter_J0), ghash_computed)
     print("[2] Tag recalculé =", format_hex(recalculated_tag))
     if recalculated_tag == tag:
-        print("✅ Authentification réussie : tag valide.")
+        print("Authentification réussie : tag valide.")
     else:
-        print("❌ Authentification échouée : tag invalide !")
+        print("Authentification échouée : tag invalide !")
     wait()
 
     # Étape 2 : Déchiffrement CTR
@@ -203,8 +203,8 @@ def aes_gcm_decrypt_demo(key: bytes, iv: bytes, aad: bytes, ciphertext: bytes, t
         print(f" Bloc {i//16}:")
         print(f"   CTR       = {format_hex(counter_block)}")
         print(f"   Keystream = {format_hex(keystream_block)}")
-        print(f"   C         = {format_hex(ciphertext_block)}")
-        print(f"   P         = {format_hex(plaintext_block)}")
+        print(f"   Ciphertext Block         = {format_hex(ciphertext_block)}")
+        print(f"   Plaintext Block         = {format_hex(plaintext_block)}")
         counter_block = increment_counter(counter_block)
         wait(BLOCK_DELAY)
 
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     aes_key = get_random_bytes(16)
     initialization_vector = get_random_bytes(12)
     additional_authenticated_data = b"AuthDataExample"
-    plaintext_message = b"AES-GCM"
+    plaintext_message = b"CAEN"
 
     ciphertext, tag, H, J0 = aes_gcm_encrypt_demo(
         aes_key, initialization_vector, plaintext_message, additional_authenticated_data
