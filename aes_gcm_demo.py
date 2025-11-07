@@ -1,7 +1,5 @@
 """
 
-Alexandre Marconnot
-
 Démonstrateur pédagogique AES-GCM
 - Montre pas à pas le chiffrement et le déchiffrement en mode Galois/Counter (GCM)
 - Affiche les valeurs intermédiaires (H, J0, GHASH, TAG, etc.)
@@ -227,3 +225,4 @@ if __name__ == "__main__":
     recovered_plaintext = aes_gcm_decrypt_demo(
         aes_key, initialization_vector, additional_authenticated_data, ciphertext, tag, H, J0
     )
+
